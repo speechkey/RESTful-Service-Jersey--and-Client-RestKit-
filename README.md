@@ -85,7 +85,7 @@ Import existing project into Eclipse from RESTServer folder and run it.
 Start REST client
 ------------------
 
-Just open RESTClient.xcodeproj in your XCode and run it in Simulator.
+Just open RESTClient.xcodeproj in your XCode and run it in Simulator. There are 2 versions of iOS client. First and default with ARC off and the second on the ARC branch, with ARC on. If you want to use ARC version just checkout the [ARC branch](http://github.com/speechkey/RESTful-Service-Jersey--and-Client-RestKit-/tree/ARC).
 
 Cleanup MySQL after testing
 --------------------------
