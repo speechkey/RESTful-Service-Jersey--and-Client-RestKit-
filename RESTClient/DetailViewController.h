@@ -17,20 +17,20 @@
 @end
 
 @interface DetailViewController : UIViewController <RKObjectLoaderDelegate>{
-    __weak id<DetailViewControllerDelegate> dataDelegate;
+    id<DetailViewControllerDelegate> dataDelegate;
 }
-@property (nonatomic, strong) NSNumber *uid;
+@property (nonatomic, retain) NSNumber *uid;
 @property (nonatomic) NSInteger index;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *photo;
-@property (nonatomic, strong) NSString *about;
-@property (nonatomic, strong) IBOutlet UITextField *labelName;
-@property (nonatomic, strong) IBOutlet UITextField *labelAbout;
-@property (nonatomic, strong) IBOutlet UIImageView *labelImage;
-@property (nonatomic, strong) IBOutlet UIScrollView *theScrollView;
-@property (nonatomic, strong) UITextField *activeTextField;
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *photo;
+@property (nonatomic, retain) NSString *about;
+@property (nonatomic, retain) IBOutlet UITextField *labelName;
+@property (nonatomic, retain) IBOutlet UITextField *labelAbout;
+@property (nonatomic, retain) IBOutlet UIImageView *labelImage;
+@property (nonatomic, retain) IBOutlet UIScrollView *theScrollView;
+@property (nonatomic, retain) UITextField *activeTextField;
 
-@property (nonatomic, weak) id<DetailViewControllerDelegate> dataDelegate;
+@property (nonatomic, assign) id<DetailViewControllerDelegate> dataDelegate;
 
 -(IBAction)sendNewData:(id)sender;
 

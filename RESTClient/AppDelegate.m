@@ -17,9 +17,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    //Create URL with
+    //Get service baseURI
     RKURL* baseUrl = [self getServiceURL];
-    
+    //Setup object mapping 
     RKObjectMapping *objectMapping = [RKObjectMapping 
                                       mappingForClass:[User class]];
     
@@ -31,7 +31,7 @@
                   toAttribute:@"about"];
     [objectMapping mapKeyPath:@"photo" 
                   toAttribute:@"photo"];
-    
+    //Setup json serialization
     RKObjectMapping *patientSerializationMapping = [RKObjectMapping 
                                                     mappingForClass:[User class]]; 
     [patientSerializationMapping mapKeyPath:@"uid" 
@@ -42,13 +42,14 @@
                                 toAttribute:@"about"]; 
     [patientSerializationMapping mapKeyPath:@"photo" 
                                 toAttribute:@"photo"];  
-    
+    //Create objectManager, will be shared across tasks
     RKObjectManager* objectManager = [RKObjectManager objectManagerWithBaseURL: baseUrl];
+    //Set serialization MIME type
     objectManager.serializationMIMEType = RKMIMETypeJSON;
+    //Set object and serialization mapping
     [objectManager.mappingProvider setMapping:objectMapping forKeyPath:@"user"];
-    //[objectManager.mappingProvider setMapping:objectMapping forKeyPath:@"user/:uid"];
     [objectManager.mappingProvider setSerializationMapping:patientSerializationMapping forClass:[User class]]; 
-    
+    //Setup routes from different HTTP methods 
     RKObjectRouter *router = [RKObjectManager sharedManager].router;
     [router routeClass:[User class] toResourcePath:@"/user" forMethod:RKRequestMethodGET];
     [router routeClass:[User class] toResourcePath:@"/user" forMethod:RKRequestMethodPOST];
@@ -56,6 +57,7 @@
     [router routeClass:[User class] toResourcePath:@"/user/:uid" forMethod:RKRequestMethodDELETE];
     
     [RKObjectManager sharedManager].router = router;
+    //Enable RestKit debugging
     RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     // Override point for customization after application launch.
     return YES;
@@ -88,6 +90,9 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+/**
+ *  Get services baseURL.
+ */
 - (RKURL *)getServiceURL{
     NSString *errorDesc = nil;
     NSPropertyListFormat format;
@@ -106,8 +111,13 @@
                                           errorDescription:&errorDesc];
     if (!temp) {
         NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
+        [errorDesc release];
     }
-    
     return [RKURL URLWithBaseURLString:[temp objectForKey:@"ServiceURI"]];
+}
+- (void)dealloc
+{
+    [_window release];
+    [super dealloc];
 }
 @end

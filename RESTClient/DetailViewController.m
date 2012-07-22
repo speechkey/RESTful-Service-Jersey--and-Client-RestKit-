@@ -17,12 +17,11 @@
 
 @implementation DetailViewController
 
-@synthesize uid, index,
-name, labelName,
-photo, labelImage,
-about, labelAbout,
-dataDelegate, theScrollView,
-activeTextField;
+@synthesize uid, index, photo, name, about,
+            labelName, labelAbout,
+            labelImage, activeTextField,
+            dataDelegate, theScrollView;
+            
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -34,11 +33,12 @@ activeTextField;
 }
 
 -(void)sendNewData:(id)sender{
-    User *user = [[User alloc] initUserWithId:uid withName:labelName.text withAbout:labelAbout.text withPhoto:photo];
+    User *user = [[[User alloc] initUserWithId:uid withName:labelName.text withAbout:labelAbout.text withPhoto:photo] autorelease];
     // POST to /contacts  
     [[RKObjectManager sharedManager] putObject:user delegate:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -56,8 +56,8 @@ activeTextField;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
-                                               object:nil]; 
-}
+                                               object:nil];
+  }
 
 - (void)viewDidUnload
 {
@@ -136,7 +136,21 @@ activeTextField;
                                             cancelButtonTitle:@"OK"
                                             otherButtonTitles:nil];
     [message show];
+    [message release];
     NSLog(@"Error in DetailVeiwController: %@", error);
 }
 
+- (void)dealloc
+{
+    [labelName release];
+    [labelAbout release];
+    [labelImage release];
+    [activeTextField release];
+    [theScrollView release];
+    [name release];
+    [about release];
+    [photo release];
+    [uid release];
+    [super dealloc];
+}
 @end

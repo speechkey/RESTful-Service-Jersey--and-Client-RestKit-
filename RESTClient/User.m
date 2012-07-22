@@ -28,12 +28,20 @@
           withAbout: (NSString *) new_about
           withPhoto: (NSString *) new_photo{
     if(self = [super init]){
-        uid = new_uid;
-        name = new_name;
-        about = new_about;
-        photo = new_photo;
+        uid = [new_uid retain];
+        name = [new_name retain];
+        about = [new_about retain];
+        photo = [new_photo retain];
     }
     return self;
+}
+- (void)dealloc
+{
+    [uid release];
+    [name release];
+    [about release];
+    [photo release];
+    [super dealloc];
 }
 @end
 

@@ -20,9 +20,6 @@
     __weak id<AddViewControllerDelegate> dataDelegate;
 }
 @property (nonatomic, strong) User *user;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *photo;
-@property (nonatomic, strong) NSString *about;
 @property (nonatomic, strong) IBOutlet UITextField *labelName;
 @property (nonatomic, strong) IBOutlet UITextField *labelAbout;
 @property (nonatomic, strong) IBOutlet UITextField *labelImage;

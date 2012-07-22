@@ -14,4 +14,6 @@
 
 @interface MasterViewController : UITableViewController <RKObjectLoaderDelegate, DetailViewControllerDelegate, AddViewControllerDelegate>
 
+@property (retain, nonatomic) NSMutableArray *data;
+
 @end

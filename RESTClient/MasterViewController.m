@@ -13,20 +13,13 @@
 #import "DetailViewController.h"
 #import "AddViewController.h"
 
-#define kCLIENTID "VICCVXGKT4H5YJ350B5GSP1UEEGMHKLDNK3I1KBK5XYJTCGB"
-#define kCLIENTSECRET "5TJHXSJIYBUDTW1TN0OFQFMQCX3W4XW33T2OZJ3VB1DLC3D3"
-
 @interface MasterViewController ()
-
-@property (strong, nonatomic) NSMutableArray *data;
-@property BOOL automaticEditControlsDidShow;
-@property (strong, nonatomic) RKClient *client;
 
 @end
 
 @implementation MasterViewController
 
-@synthesize data, automaticEditControlsDidShow, client;
+@synthesize data;
 
 - (void)sendRequest
 {
@@ -35,6 +28,7 @@
 
 -(void)deleteUser:(NSUInteger) index{
     User* user = [data objectAtIndex:index];
+    NSLog(@"Index to delete: %@", user.name);
     [[RKObjectManager sharedManager] deleteObject:user delegate:self];
     [data removeObjectAtIndex:index];
 }
@@ -56,6 +50,8 @@
 
 - (void)viewDidUnload
 {
+    //Unset edit button
+    self.navigationItem.rightBarButtonItem = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -92,20 +88,20 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     //Check if any spare cell exists, if not create one
     if (cell == nil) {
-        cell = [[UITableViewCell alloc]
-                initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        cell = [[[UITableViewCell alloc]
+                initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"] autorelease];
     }
     //Get loaded user obj at index
     User *user = [data objectAtIndex:indexPath.row];
     //Add users name
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ - %@", [user uid], [user name]];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@", user.name];
     //Display placeholder image while image is downloading
     cell.imageView.image = [UIImage imageNamed:@"placeholder.png"];
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,  0ul);
     dispatch_async(queue, ^{
-        NSURL *imageURL=[NSURL URLWithString:[user photo]];
-        NSData *image=[NSData dataWithContentsOfURL:imageURL];
+        NSURL *imageURL = [NSURL URLWithString:[user photo]];
+        NSData *image = [NSData dataWithContentsOfURL:imageURL];
         UIImage *img = [UIImage imageWithData:image]; 
         
         dispatch_sync(dispatch_get_main_queue(), ^{
@@ -120,12 +116,7 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        NSLog(@"Data before deletion: %i", [data count]);
         [self deleteUser:indexPath.row];
-        NSLog(@"Data after deletion: %i", [data count]);
-        //[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-        //               withRowAnimation:UITableViewRowAnimationTop];
-        //[data removeObjectAtIndex:indexPath.row - 1];
         [tableView reloadData];
     }  
 }
@@ -159,14 +150,13 @@
 }
 
 - (void)request:(RKRequest*)request didLoadResponse:(RKResponse*)response {
-    NSLog(@"response code: %d", [response statusCode]);
+    NSLog(@"Response code: %d", [response statusCode]);
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
     if(objectLoader.response.statusCode != 204){
         data = [objects mutableCopy];
-        
         [self.tableView reloadData];
     }
 }
@@ -190,7 +180,7 @@
     
     if (editing)
     {
-        UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addItem:)];
+        UIBarButtonItem *addButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addItem:)] autorelease];
         self.navigationItem.leftBarButtonItem = addButton;
     }
     else {
@@ -213,14 +203,18 @@
 
 - (void)addToList:(AddViewController *)addView User:(User *)user
 {
+    [user retain];
     [data addObject:user];
     [self.tableView reloadData];
-    // [self dimissModalViewControllerAnimated:YES];
-    // [self reloadInputViews];
 }
 - (void)userChanged:(User *)user inView:(id)viewController atIndex:(NSInteger) index{
     [data replaceObjectAtIndex:index withObject:user];
     NSLog(@"Data:%@", data);
     [self.tableView reloadData];
+}
+- (void)dealloc
+{
+    [data release];
+    [super dealloc];
 }
 @end

@@ -16,19 +16,14 @@
 @end
 
 @implementation AddViewController
-@synthesize name, labelName,
-photo, labelImage,
-about, labelAbout,
-dataDelegate, user,
+@synthesize labelName, labelImage,
+            labelAbout,
+            dataDelegate, user,
 theScrollView, activeTextField;
 
 -(void)add:(id)sender{
-    user = [[User alloc ] initUserWithId:0 withName:labelName.text withAbout:labelAbout.text withPhoto:labelImage.text];
+    user = [[[User alloc ] initUserWithId:0 withName:labelName.text withAbout:labelAbout.text withPhoto:labelImage.text] autorelease];
     [[RKObjectManager sharedManager] postObject:user delegate:self];
-}
-
--(User *)getUser{
-    return user;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -88,6 +83,7 @@ theScrollView, activeTextField;
                                             otherButtonTitles:nil];
     
     [message show];
+    [message release];
 }
 
 - (void)keyboardWasShown:(NSNotification *)notification 
@@ -132,6 +128,16 @@ theScrollView, activeTextField;
 - (IBAction)dismissKeyboard:(id)sender
 {
     [activeTextField resignFirstResponder];
+}
+- (void)dealloc
+{
+    [labelName release];
+    [labelImage release];
+    [labelAbout release];
+    [user release];
+    [theScrollView release];
+    [activeTextField release];
+    [super dealloc];
 }
 
 @end

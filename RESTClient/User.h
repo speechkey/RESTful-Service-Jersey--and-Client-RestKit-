@@ -15,10 +15,10 @@
     NSString *photo;
 }
 
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSNumber *uid;
-@property (nonatomic, strong) NSString *about;
-@property (nonatomic, strong) NSString *photo;
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSNumber *uid;
+@property (nonatomic, retain) NSString *about;
+@property (nonatomic, retain) NSString *photo;
 
 -(id)initUserWithId: (NSNumber *) uid
            withName: (NSString *) name
